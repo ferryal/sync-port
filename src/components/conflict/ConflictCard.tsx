@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react'
 import type { SyncChange } from '@/lib/schemas'
 import type { ConflictResolution } from '@/lib/schemas'
 import { useConflictStore } from '@/stores/useConflictStore'
+import { getFieldLabel, formatValue, getRecordId } from '@/lib/utils'
 
 interface ConflictCardProps {
   change: SyncChange
@@ -9,41 +10,9 @@ interface ConflictCardProps {
   applicationName: string
 }
 
-function formatValue(value: string | undefined, fieldName: string): string {
-  if (!value) return '—'
-  // Format timestamps nicely
-  if (fieldName.includes('access_end') || fieldName.includes('access_start')) {
-    try {
-      return new Date(value).toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric'
-      })
-    } catch { return value }
-  }
-  return value
-}
 
-function getRecordId(change: SyncChange, index: number) {
-  const prefix = change.field_name.startsWith('user') ? 'USR' :
-    change.field_name.startsWith('door') ? 'DEV' : 'KEY'
-  return `${prefix}-${String(index + 1000).padStart(4, '0')}`
-}
 
-function getFieldLabel(fieldName: string) {
-  const map: Record<string, string> = {
-    'user.email': 'User Email',
-    'user.role': 'User Role',
-    'user.name': 'User Name',
-    'user.status': 'User Status',
-    'user.phone': 'User Phone',
-    'door.status': 'Device Status',
-    'door.battery_level': 'Battery Level',
-    'key.key_type': 'Key Type',
-    'key.status': 'Key Status',
-    'key.access_end': 'Access End Date',
-    'key.access_start': 'Access Start Date',
-  }
-  return map[fieldName] || fieldName
-}
+
 
 export function ConflictCard({ change, index, applicationName }: ConflictCardProps) {
   const { selectedConflictIds, resolutions, toggleSelect, setResolution } = useConflictStore()

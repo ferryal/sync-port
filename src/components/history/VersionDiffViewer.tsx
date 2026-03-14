@@ -1,28 +1,13 @@
 import { useState } from 'react'
 import { Icon } from '@iconify/react'
 import type { SyncHistoryEvent } from '@/lib/schemas'
+import { getDiffLines } from '@/lib/utils'
 
 interface VersionDiffViewerProps {
   event: SyncHistoryEvent
 }
 
-function getDiffLines(prev: string, curr: string) {
-  const prevLines = prev.split('\n')
-  const currLines = curr.split('\n')
 
-  const addedLines = new Set<number>()
-  const removedLines = new Set<number>()
-
-  const maxLen = Math.max(prevLines.length, currLines.length)
-  for (let i = 0; i < maxLen; i++) {
-    if (prevLines[i] !== currLines[i]) {
-      if (prevLines[i] !== undefined) removedLines.add(i)
-      if (currLines[i] !== undefined) addedLines.add(i)
-    }
-  }
-
-  return { prevLines, currLines, addedLines, removedLines }
-}
 
 export function VersionDiffViewer({ event }: VersionDiffViewerProps) {
   const [viewMode, setViewMode] = useState<'side' | 'unified'>('side')

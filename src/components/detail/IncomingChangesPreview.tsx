@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Icon } from '@iconify/react'
 import type { SyncChange } from '@/lib/schemas'
+import { getEntityAndField, getEntityIcon } from '@/lib/utils'
 
 interface IncomingChangesPreviewProps {
   changes: SyncChange[]
@@ -9,22 +10,7 @@ interface IncomingChangesPreviewProps {
   onDiscardAll?: () => void
 }
 
-function getEntityAndField(fieldName: string) {
-  const parts = fieldName.split('.')
-  return {
-    entity: parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1) : fieldName,
-    field: parts[1] || fieldName,
-  }
-}
 
-function getEntityIcon(entity: string) {
-  const map: Record<string, string> = {
-    User: 'mdi:account-outline',
-    Door: 'mdi:door-open',
-    Key: 'mdi:key-outline',
-  }
-  return map[entity] || 'mdi:database-outline'
-}
 
 const PAGE_SIZE = 5
 

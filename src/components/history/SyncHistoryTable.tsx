@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react'
 import type { SyncHistoryEvent } from '@/lib/schemas'
 import { SyncResultBadge } from '@/components/ui/StatusBadge'
+import { formatTimestamp } from '@/lib/utils'
 
 interface SyncHistoryTableProps {
   events: SyncHistoryEvent[]
@@ -8,13 +9,7 @@ interface SyncHistoryTableProps {
   onSelect: (event: SyncHistoryEvent) => void
 }
 
-function formatTimestamp(ts: string) {
-  const d = new Date(ts)
-  return d.toLocaleString('en-US', {
-    month: 'short', day: 'numeric', year: 'numeric',
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-  })
-}
+
 
 export function SyncHistoryTable({ events, selectedId, onSelect }: SyncHistoryTableProps) {
   return (
