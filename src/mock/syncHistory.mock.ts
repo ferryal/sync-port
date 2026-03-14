@@ -1,0 +1,102 @@
+import type { SyncHistoryEvent } from '@/lib/schemas'
+
+export const mockSyncHistory: SyncHistoryEvent[] = [
+  {
+    id: 'evt-001',
+    eventId: '#SYNC-90210',
+    integrationId: 'salesforce',
+    timestamp: '2026-03-14T07:30:22Z',
+    result: 'success',
+    changesCount: 42,
+    initiator: 'System',
+    version: 'v4.2.0',
+    sha256: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z',
+    signedBy: 'System Root Authority',
+    syncDuration: 1244,
+    avgSyncDuration: 1180,
+    payload: {
+      previous: JSON.stringify({
+        integration_id: 'INT-77',
+        status: 'active',
+        sync_frequency: '6h',
+        metadata: { region: 'us-east', priority: 'normal' }
+      }, null, 2),
+      current: JSON.stringify({
+        integration_id: 'INT-77',
+        status: 'active',
+        sync_frequency: '1h',
+        metadata: { region: 'us-east', priority: 'critical' }
+      }, null, 2),
+    },
+  },
+  {
+    id: 'evt-002',
+    eventId: '#SYNC-90209',
+    integrationId: 'salesforce',
+    timestamp: '2026-03-14T05:15:05Z',
+    result: 'conflict',
+    changesCount: 12,
+    initiator: 'Sarah J.',
+    version: 'v4.1.9',
+    sha256: 'b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5',
+    signedBy: 'Sarah J.',
+    syncDuration: 2100,
+    avgSyncDuration: 1180,
+    payload: {
+      previous: JSON.stringify({
+        integration_id: 'INT-77',
+        status: 'active',
+        sync_frequency: '12h',
+        metadata: { region: 'us-west', priority: 'low' }
+      }, null, 2),
+      current: JSON.stringify({
+        integration_id: 'INT-77',
+        status: 'active',
+        sync_frequency: '6h',
+        metadata: { region: 'us-east', priority: 'normal' }
+      }, null, 2),
+    },
+  },
+  {
+    id: 'evt-003',
+    eventId: '#SYNC-90208',
+    integrationId: 'salesforce',
+    timestamp: '2026-03-13T02:00:00Z',
+    result: 'failed',
+    changesCount: 0,
+    initiator: 'System',
+    version: 'v4.1.8',
+    sha256: 'c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z',
+    signedBy: 'System Root Authority',
+    syncDuration: 450,
+    avgSyncDuration: 1180,
+  },
+  {
+    id: 'evt-004',
+    eventId: '#SYNC-90207',
+    integrationId: 'hubspot',
+    timestamp: '2026-03-13T20:00:00Z',
+    result: 'success',
+    changesCount: 18,
+    initiator: 'System',
+    version: 'v2.1.0',
+    sha256: 'd4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z',
+    signedBy: 'System Root Authority',
+    syncDuration: 980,
+    avgSyncDuration: 950,
+  },
+  {
+    id: 'evt-005',
+    eventId: '#SYNC-90206',
+    integrationId: 'slack',
+    timestamp: '2026-03-13T18:45:00Z',
+    result: 'conflict',
+    changesCount: 7,
+    initiator: 'Mike R.',
+    version: 'v1.0.4',
+    sha256: 'e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z',
+    signedBy: 'Mike R.',
+    syncDuration: 1600,
+    avgSyncDuration: 1200,
+  },
+]
