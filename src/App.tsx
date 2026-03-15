@@ -8,6 +8,7 @@ import { Dashboard } from "@/pages/dashboard";
 import { IntegrationDetail } from "@/pages/integration-detail";
 import { SyncHistory } from "@/pages/sync-history";
 import { ConflictWorkspace } from "@/pages/conflict-workspace";
+import { SyncApproval } from "@/pages/sync-approval";
 import { Icon } from "@iconify/react";
 
 function NotFoundPage() {
@@ -41,6 +42,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/integrations/:id" element={<IntegrationDetail />} />
               <Route path="/conflicts/:id" element={<ConflictWorkspace />} />
+              <Route path="/approvals/:id" element={<SyncApproval />} />
               <Route path="/history" element={<SyncHistory />} />
               <Route path="/activity" element={<SyncHistory />} />
               <Route

@@ -124,7 +124,7 @@ export function IntegrationDetail() {
               </div>
             </div>
 
-            <div className="info-card__sync-btn">
+            <div className="info-card__sync-btn" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <Button
                 id="sync-now-btn"
                 variant="primary"
@@ -138,6 +138,16 @@ export function IntegrationDetail() {
                   width={18}
                 />
                 {mutation.isPending ? 'Syncing...' : 'Sync Now'}
+              </Button>
+              
+              <Button
+                variant="secondary"
+                size="lg"
+                fullWidth
+                onClick={() => navigate(`/history?integration=${id}`)}
+              >
+                <Icon icon="mdi:history" width={18} />
+                View Sync History
               </Button>
             </div>
           </div>
@@ -177,10 +187,7 @@ export function IntegrationDetail() {
             <IncomingChangesPreview
               changes={changes}
               applicationName={syncResult?.data.data.sync_approval.application_name ?? integration.name}
-              onApproveAll={() => {
-                const hasUpdates = changes.some(c => c.change_type === 'UPDATE')
-                if (hasUpdates) navigate(`/conflicts/${id}`)
-              }}
+              onApproveAll={() => navigate(`/approvals/${id}`)}
               onDiscardAll={() => useIntegrationStore.getState().clearSyncResult(id!)}
             />
           ) : (
