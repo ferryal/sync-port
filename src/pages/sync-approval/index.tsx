@@ -9,7 +9,8 @@ import { FullErrorState } from '@/components/ui/ErrorState'
 import { ApprovalChangeRow } from '@/components/approval/ApprovalChangeRow'
 import { ApprovalConfirmBar } from '@/components/approval/ApprovalConfirmBar'
 import { Checkbox } from '@/components/ui/Checkbox'
-
+import { queryClient } from '@/lib/queryClient'
+import { queryKeys } from '@/lib/queryKeys'
 
 export function SyncApproval() {
   const { id } = useParams<{ id: string }>()
@@ -39,6 +40,42 @@ export function SyncApproval() {
   }
 
   const handleApprove = () => {
+    const approvedChangesObj = approvalChanges.filter(c => selectedIds.has(c.id))
+    
+    if (approvedChangesObj.length > 0) {
+      const prevPayload: Record<string, string> = {}
+      const currPayload: Record<string, string> = {}
+      
+      approvedChangesObj.forEach(c => {
+        if (c.change_type === 'DELETE' || c.change_type === 'UPDATE') {
+          prevPayload[c.field_name] = c.current_value || ''
+        }
+        if (c.change_type === 'ADD' || c.change_type === 'UPDATE') {
+          currPayload[c.field_name] = c.new_value || ''
+        }
+      })
+
+      useIntegrationStore.getState().addHistoryEvent({
+        id: `evt-${Date.now()}`,
+        eventId: `#SYNC-${Math.floor(Math.random() * 10000) + 90000}`,
+        integrationId: id!,
+        timestamp: new Date().toISOString(),
+        result: 'success',
+        changesCount: approvedChangesObj.length,
+        initiator: 'Admin User',
+        version: `v5.${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 10)}`,
+        sha256: Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join(''),
+        signedBy: 'Admin User',
+        syncDuration: Math.floor(Math.random() * 1000) + 500,
+        avgSyncDuration: 850,
+        payload: {
+          previous: JSON.stringify(prevPayload, null, 2),
+          current: JSON.stringify(currPayload, null, 2)
+        }
+      })
+      queryClient.invalidateQueries({ queryKey: queryKeys.syncHistory.all })
+    }
+
     toast.success(
       'Changes approved!',
       `${approvedCount} change${approvedCount !== 1 ? 's' : ''} from ${applicationName} have been applied.`

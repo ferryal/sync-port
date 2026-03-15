@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useSyncHistory } from '@/hooks/queries/useSyncHistory'
 import { SyncHistoryTable } from '@/components/history/SyncHistoryTable'
@@ -8,7 +9,9 @@ import { FullErrorState } from '@/components/ui/ErrorState'
 import type { SyncHistoryEvent } from '@/lib/schemas'
 
 export function SyncHistory() {
-  const { data: events, isLoading, error, refetch } = useSyncHistory()
+  const [searchParams] = useSearchParams()
+  const integrationId = searchParams.get('integration') || undefined
+  const { data: events, isLoading, error, refetch } = useSyncHistory(integrationId)
   const [selectedEvent, setSelectedEvent] = useState<SyncHistoryEvent | undefined>()
 
   const handleRowSelect = (event: SyncHistoryEvent) => {
@@ -20,8 +23,12 @@ export function SyncHistory() {
       {/* Page header */}
       <div className="page-header">
         <div className="page-header__left">
-          <h1>Sync History</h1>
-          <p>Forensic review and version control snapshots.</p>
+          <h1>{integrationId ? 'Integration Sync History' : 'Global Sync History'}</h1>
+          <p>
+            {integrationId
+              ? 'Forensic review of sync events for this integration.'
+              : 'Forensic review and version control snapshots across all integrations.'}
+          </p>
         </div>
         <div className="page-header__right">
           <button className="btn btn--secondary">

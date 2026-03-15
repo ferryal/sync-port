@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useIntegrationDetail } from '@/hooks/queries/useIntegrationDetail'
@@ -30,6 +30,15 @@ export function IntegrationDetail() {
 
   const currentStatus = integrationStatuses[id!] ?? integration?.status
   const changes = syncResult?.data.data.sync_approval.changes ?? []
+
+  const hasAutoSynced = useRef(false)
+  
+  useEffect(() => {
+    if (integration && currentStatus === 'conflict' && !syncResult && !hasAutoSynced.current) {
+      hasAutoSynced.current = true
+      mutation.mutate()
+    }
+  }, [integration, currentStatus, syncResult])
 
   if (isLoading) return <DetailSkeleton />
 
@@ -215,7 +224,7 @@ export function IntegrationDetail() {
           )}
 
           {/* Conflict CTA */}
-          {changes.some(c => c.change_type === 'UPDATE') && (
+          {(currentStatus === 'conflict' || changes.some(c => c.change_type === 'UPDATE')) && (
             <div
               className="card"
               style={{
@@ -229,7 +238,9 @@ export function IntegrationDetail() {
             >
               <span style={{ fontSize: 13.5, color: '#fbbf24', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Icon icon="mdi:alert-outline" width={16} />
-                {changes.filter(c => c.change_type === 'UPDATE').length} UPDATE conflicts require resolution
+                {changes.filter(c => c.change_type === 'UPDATE').length > 0
+                  ? `${changes.filter(c => c.change_type === 'UPDATE').length} UPDATE conflicts require resolution`
+                  : 'Outstanding conflicts require resolution'}
               </span>
               <Button variant="primary" size="sm" onClick={() => navigate(`/conflicts/${id}`)}>
                 Resolve Conflicts

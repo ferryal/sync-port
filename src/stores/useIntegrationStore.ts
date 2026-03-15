@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import type { SyncResponse, IntegrationStatus } from '@/lib/schemas'
+import type { SyncResponse, IntegrationStatus, SyncHistoryEvent } from '@/lib/schemas'
+import { mockSyncHistory } from '@/mock/syncHistory.mock'
 
 interface SyncResult {
   integrationId: string
@@ -13,11 +14,14 @@ interface IntegrationState {
   syncResults: Record<string, SyncResult>
   activeFilter: string
 
+  historyEvents: SyncHistoryEvent[]
+
   setSelectedIntegration: (id: string | null) => void
   setIntegrationStatus: (id: string, status: IntegrationStatus) => void
   setSyncResult: (integrationId: string, data: SyncResponse) => void
   clearSyncResult: (integrationId: string) => void
   setActiveFilter: (filter: string) => void
+  addHistoryEvent: (event: SyncHistoryEvent) => void
 }
 
 export const useIntegrationStore = create<IntegrationState>((set) => ({
@@ -25,6 +29,7 @@ export const useIntegrationStore = create<IntegrationState>((set) => ({
   integrationStatuses: {},
   syncResults: {},
   activeFilter: 'all',
+  historyEvents: mockSyncHistory,
 
   setSelectedIntegration: (id) => set({ selectedIntegrationId: id }),
 
@@ -48,4 +53,7 @@ export const useIntegrationStore = create<IntegrationState>((set) => ({
     }),
 
   setActiveFilter: (filter) => set({ activeFilter: filter }),
+  
+  addHistoryEvent: (event) => 
+    set((state) => ({ historyEvents: [event, ...state.historyEvents] })),
 }))

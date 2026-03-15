@@ -11,6 +11,8 @@ import { FullErrorState } from "@/components/ui/ErrorState";
 import type { SyncChange } from "@/lib/schemas";
 import { ConflictRow } from "@/components/conflict/ConflictRow";
 import { MergeBar } from "@/components/conflict/MergeBar";
+import { queryClient } from "@/lib/queryClient"
+import { queryKeys } from "@/lib/queryKeys"
 
 export function ConflictWorkspace() {
   const { id } = useParams<{ id: string }>();
@@ -54,6 +56,43 @@ export function ConflictWorkspace() {
   const handleMerge = () => {
     setMerging(true);
     setTimeout(() => {
+      const prevPayload: Record<string, string> = {}
+      const currPayload: Record<string, string> = {}
+      let appliedCount = 0
+
+      conflicts.forEach(c => {
+        const res = resolutions[c.id]
+        if (res) {
+          prevPayload[c.field_name] = c.current_value || ''
+          if (res === 'external') {
+            currPayload[c.field_name] = c.new_value || ''
+            appliedCount++
+          } else {
+            currPayload[c.field_name] = c.current_value || ''
+          }
+        }
+      })
+
+      useIntegrationStore.getState().addHistoryEvent({
+        id: `evt-${Date.now()}`,
+        eventId: `#SYNC-${Math.floor(Math.random() * 10000) + 90000}`,
+        integrationId: id!,
+        timestamp: new Date().toISOString(),
+        result: 'conflict',
+        changesCount: appliedCount,
+        initiator: 'Admin User',
+        version: `v5.${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 10)}`,
+        sha256: Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join(''),
+        signedBy: 'Admin User',
+        syncDuration: Math.floor(Math.random() * 1000) + 500,
+        avgSyncDuration: 850,
+        payload: {
+          previous: JSON.stringify(prevPayload, null, 2),
+          current: JSON.stringify(currPayload, null, 2)
+        }
+      })
+      queryClient.invalidateQueries({ queryKey: queryKeys.syncHistory.all })
+
       toast.success(
         "Changes applied successfully!",
         `${resolvedCount} conflict${resolvedCount !== 1 ? "s" : ""} merged into ${applicationName}.`,
