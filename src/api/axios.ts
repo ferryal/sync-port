@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const apiClient = axios.create({
-  baseURL: 'https://portier-takehometest.onrender.com/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || 'https://portier-takehometest.onrender.com/api/v1',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
