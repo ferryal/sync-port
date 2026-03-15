@@ -50,7 +50,15 @@ export function ConflictRow({
       <td>
         <div className="val-cell">
           <div className="val-label">Current</div>
-          <div className="val-old">{shortValue(change.current_value)}</div>
+          <div
+            className="val-old"
+            style={{ 
+              textDecoration: resolution === 'local' ? 'none' : 'line-through',
+              color: resolution === 'local' ? '#6ee7b7' : 'rgba(248,113,113,.8)'
+            }}
+          >
+            {shortValue(change.current_value)}
+          </div>
         </div>
       </td>
 
@@ -58,7 +66,15 @@ export function ConflictRow({
       <td>
         <div className="val-cell">
           <div className="val-label">From {applicationName}</div>
-          <div className="val-incoming">{shortValue(change.new_value)}</div>
+          <div
+            className="val-incoming"
+            style={{
+              textDecoration: resolution === 'local' ? 'line-through' : 'none',
+              color: resolution === 'local' ? 'rgba(248,113,113,.8)' : '#6ee7b7'
+            }}
+          >
+            {shortValue(change.new_value)}
+          </div>
         </div>
       </td>
 
